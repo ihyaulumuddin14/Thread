@@ -6,9 +6,15 @@ import java.util.concurrent.Executors;
 
 public class StudiKasus2 {
     public static void main(String[] args) {
-        ExecutorService executor = Executors.newFixedThreadPool(5);
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Masukkan jumlah thread : ");
+        int jumlahThread = scanner.nextInt();
+        System.out.print("Masukkan jumlah aktivitas stok : ");
+        int jumlahAktivitas = scanner.nextInt();
 
-        for (int i = 1; i <= 30; i++) {
+        ExecutorService executor = Executors.newFixedThreadPool(jumlahThread);
+
+        for (int i = 1; i <= jumlahAktivitas; i++) {
             String barang = new Random().nextBoolean() ? "Laptop" : "Keyboard";
             
             if (i % 2 == 0) {
