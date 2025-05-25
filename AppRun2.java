@@ -8,7 +8,7 @@ public class AppRun2 {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Masukkan jumlah thread : ");
         int jumlahThread = scanner.nextInt();
-        System.out.print("Masukkan jumlah aktivitas stok : ");
+        System.out.print("Masukkan jumlah aktivitas Toko Online : ");
         int jumlahAktivitas = scanner.nextInt();
 
         ExecutorService executor = Executors.newFixedThreadPool(jumlahThread);

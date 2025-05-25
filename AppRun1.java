@@ -2,20 +2,28 @@ import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class StudiKasus1 {
+public class AppRun1 {
+    private static ExecutorService executor;
 
-    public static void main(String[] args) throws InterruptedException {
-        ExecutorService executor = Executors.newFixedThreadPool(5);
+    public static void main(String[] args) {
 
-        executor.execute(() -> digitFaktorial());
-        executor.execute(() -> cekKeberadaanPrima(10000, 9873));
-        executor.execute(() -> hitungKuadrat(15458));
-        executor.execute(() -> cariMaksimum());
-        executor.execute(() -> jumlahkanArray());
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Masukkan jumlah thread : ");
+        int jumlahThread = scanner.nextInt();
+
+        executor = Executors.newFixedThreadPool(jumlahThread);
+        
+        executor.execute(() -> AppRun.digitFaktorial());
+        executor.execute(() -> AppRun.cekKeberadaanPrima(10000, 9873));
+        executor.execute(() -> AppRun.hitungKuadrat(15458));
+        executor.execute(() -> AppRun.cariMaksimum());
+        executor.execute(() -> AppRun.jumlahkanArray());
 
         executor.shutdown();
     }
+}
 
+class AppRun {
     // 1. hitung digit faktorial
     static void digitFaktorial() {
         String threadName = Thread.currentThread().getName();
