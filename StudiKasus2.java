@@ -1,4 +1,3 @@
-
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,13 +9,15 @@ public class StudiKasus2 {
         ExecutorService executor = Executors.newFixedThreadPool(5);
 
         for (int i = 1; i <= 30; i++) {
+            String barang = new Random().nextBoolean() ? "Laptop" : "Keyboard";
+            
             if (i % 2 == 0) {
                 executor.execute(() -> {
-                    Inventori.tambahStok("Laptop", new Random().nextInt(7) + 1);
+                    Inventori.tambahStok(barang, new Random().nextInt(7) + 1);
                 });
             } else {
                 executor.execute(() -> {
-                    Inventori.kurangiStok("Laptop", new Random().nextInt(8) + 1);
+                    Inventori.kurangiStok(barang, new Random().nextInt(8) + 1);
                 });
             }
         }
@@ -27,12 +28,14 @@ public class StudiKasus2 {
         while (!executor.isTerminated()) {}
         
         System.out.println("Stok akhir Laptop: " + Inventori.laptop.getStok());
+        System.out.println("Stok akhir Keyboard: " + Inventori.keyboard.getStok());
     }
 }
 
 class Inventori {
     static Laptop laptop = new Laptop("Asus", 10);
-    
+    static Keyboard keyboard = new Keyboard("Logitech", 5);
+
     static synchronized void tambahStok(String namaBarang, int jumlah) {
         namaBarang = namaBarang.toLowerCase();
         String threadName = Thread.currentThread().getName().substring(7);
@@ -46,6 +49,8 @@ class Inventori {
         System.out.print(threadName + " - ");
         if (namaBarang.equals("laptop")) {
             laptop.tambahStok(jumlah);
+        } else if (namaBarang.equals("keyboard")) {
+            keyboard.tambahStok(jumlah);
         }
     }
     
@@ -63,6 +68,8 @@ class Inventori {
 
         if (namaBarang.equals("laptop")) {
             laptop.kurangiStok(jumlah);
+        }else if (namaBarang.equals("keyboard")){
+            keyboard.kurangiStok(jumlah);
         }
     }
 }
@@ -119,6 +126,31 @@ class Laptop extends Barang {
         super.kurangiStok(jumlah);
         super.infoBeli(jumlah);
         System.out.print("Laptop " + this.merk + ". ");
+        System.out.println("Stok tersisa: " + getStok());
+    }
+}
+
+class Keyboard extends Barang {
+    Keyboard(String merk, int stok) {
+        super(merk, stok);
+    }
+    @Override
+    public void tambahStok(int jumlah) {
+        super.tambahStok(jumlah);
+        super.infoRestock(jumlah);
+        System.out.print("Keyboard " + this.merk + ". ");
+        System.out.println("Stok sekarang: " + getStok());
+    }
+    
+    @Override
+    public void kurangiStok(int jumlah) {
+        if (jumlah > getStok()) {
+            System.out.println("Gagal, membeli " + jumlah + " keyboard. Stok tidak mencukupi.");
+            return;
+        }
+        super.kurangiStok(jumlah);
+        super.infoBeli(jumlah);
+        System.out.print("Keyboard " + this.merk + ". ");
         System.out.println("Stok tersisa: " + getStok());
     }
 }
