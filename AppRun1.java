@@ -6,13 +6,13 @@ public class AppRun1 {
     private static ExecutorService executor;
 
     public static void main(String[] args) {
-
         Scanner scanner = new Scanner(System.in);
         System.out.print("Masukkan jumlah thread : ");
         int jumlahThread = scanner.nextInt();
 
         executor = Executors.newFixedThreadPool(jumlahThread);
         
+        // Menjalankan 5 tugas secara paralel menggunakan lambda expressions
         executor.execute(() -> Pekerjaan.digitFaktorial());
         executor.execute(() -> Pekerjaan.cekKeberadaanPrima(10000, 9873));
         executor.execute(() -> Pekerjaan.hitungKuadrat(15458));
@@ -24,23 +24,24 @@ public class AppRun1 {
 }
 
 class Pekerjaan {
-    // 1. hitung digit faktorial
+    
     static void digitFaktorial() {
         String threadName = Thread.currentThread().getName();
         try {
             System.out.println(threadName + " - Mulai faktorial...");
 
+            // BigInteger digunakan karena faktorial 20000 menghasilkan bilangan yang sangat besar
             BigInteger hasil = BigInteger.valueOf(1);
             for (int i = 2; i <= 20000; i++) {
                 hasil = hasil.multiply(BigInteger.valueOf(i));
             }
+            
             System.out.println(threadName + " - Selesai faktorial: didapatkan angka sebanyak " + hasil.toString().length() + " digit.");
         } catch (Exception e) {
             System.err.println("Terjadi kesalahan saat menghitung faktorial: " + e.getMessage());
         }
     }
 
-    // 2. cek keberadaan bilangan prima
     static void cekKeberadaanPrima(int batas, int tebakan) {
         String threadName = Thread.currentThread().getName();
         List<Integer> bilanganPrima = new ArrayList<>();
@@ -55,6 +56,7 @@ class Pekerjaan {
                 if (isPrime(i)) bilanganPrima.add(i);
             }
 
+            // Konversi ke Set untuk pencarian O(1) dibanding List yang O(n)
             Set<Integer> primaAcak = new HashSet<>(bilanganPrima);
 
             System.out.println(
@@ -66,9 +68,9 @@ class Pekerjaan {
         } catch (InterruptedException e) {
             System.out.println("Operasi cek bilangan prima terputus: " + e.getMessage());
         }
-
     }
 
+    // Algoritma trial division dengan optimasi hingga √n
     static boolean isPrime(int n) {
         if (n < 2) return false;
         for (int i = 2; i <= Math.sqrt(n); i++) {
@@ -77,18 +79,16 @@ class Pekerjaan {
         return true;
     }
 
-    // 3. hitung kuadrat
     static void hitungKuadrat(int n) {
         String threadName = Thread.currentThread().getName();
         BigInteger kuadrat = BigInteger.ZERO;
 
-        
         try {
             System.out.println(threadName + " - Hitung kuadrat...");
-
             Thread.sleep(3000);
 
             if (n < 0) throw new IllegalArgumentException("Kuadrat tidak didefinisikan untuk bilangan negatif.");
+            
             BigInteger x = BigInteger.valueOf(n);
             kuadrat = x.multiply(x);
 
@@ -98,17 +98,17 @@ class Pekerjaan {
         }
     }
 
-    // 4. Cari maksimum dari array besar
     static void cariMaksimum() {
         String threadName = Thread.currentThread().getName();
 
         try {
             System.out.println(threadName + " - Cari maksimum...");
-
             Thread.sleep(3500);
 
             Random rand = new Random();
+            // Membuat 10 juta integer acak secara efisien
             int[] data = rand.ints(10_000_000, 0, 1_000_000).toArray();
+            
             int max = Integer.MIN_VALUE;
             for (int num : data) {
                 if (num > max) max = num;
@@ -120,16 +120,16 @@ class Pekerjaan {
         }
     }
 
-    // 5. Jumlahkan isi array besar
     static void jumlahkanArray() {
         String threadName = Thread.currentThread().getName();
         try {
             System.out.println(threadName + " - Jumlahkan array...");
-
             Thread.sleep(3000);
 
             Random rand = new Random();
             int[] data = rand.ints(10_000_000, 0, 1000).toArray();
+            
+            // Menggunakan long karena sum dari 10 juta integer bisa overflow int
             long sum = 0;
             for (int num : data) {
                 sum += num;

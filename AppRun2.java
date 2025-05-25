@@ -16,6 +16,7 @@ public class AppRun2 {
         for (int i = 1; i <= jumlahAktivitas; i++) {
             String barang = new Random().nextBoolean() ? "Laptop" : "Keyboard";
             
+            // Pola: genap = restock, ganjil = penjualan
             if (i % 2 == 0) {
                 executor.execute(() -> {
                     Inventori.tambahStok(barang, new Random().nextInt(7) + 1);
@@ -27,9 +28,9 @@ public class AppRun2 {
             }
         }
 
-
         executor.shutdown();
 
+        // Menunggu semua thread selesai
         while (!executor.isTerminated()) {}
         
         System.out.println("Stok akhir Laptop: " + Inventori.laptop.getStok());
@@ -41,12 +42,14 @@ class Inventori {
     static Laptop laptop = new Laptop("Asus", 10);
     static Keyboard keyboard = new Keyboard("Logitech", 5);
 
+    // synchronized mencegah race condition saat multiple threads akses bersamaan
     static synchronized void tambahStok(String namaBarang, int jumlah) {
         namaBarang = namaBarang.toLowerCase();
+        // Mengambil nomor thread saja (menghilangkan "pool-1-thread-")
         String threadName = Thread.currentThread().getName().substring(7);
 
         try {
-            Thread.sleep(450);
+            Thread.sleep(450); // Simulasi delay restock
         } catch(InterruptedException e) {
             System.out.println("Kesalahan saat sistem restock: " + e.getMessage());
         }
@@ -64,7 +67,7 @@ class Inventori {
         String threadName = Thread.currentThread().getName().substring(7);
 
         try {
-            Thread.sleep(250);
+            Thread.sleep(250); // Simulasi delay penjualan
         } catch(InterruptedException e) {
             System.out.println("Kesalahan saat sistem beli: " + e.getMessage());
         }
@@ -81,7 +84,7 @@ class Inventori {
 
 class Barang {
     protected String merk;
-    private int stok;
+    private int stok; // private untuk encapsulation
 
     public Barang(String merk, int stok) {
         this.merk = merk;
@@ -124,6 +127,7 @@ class Laptop extends Barang {
     
     @Override
     public void kurangiStok(int jumlah) {
+        // Validasi stok untuk mencegah overselling
         if (jumlah > getStok()) {
             System.out.println("Gagal, membeli " + jumlah + " laptop. Stok tidak mencukupi.");
             return;
@@ -139,6 +143,7 @@ class Keyboard extends Barang {
     Keyboard(String merk, int stok) {
         super(merk, stok);
     }
+    
     @Override
     public void tambahStok(int jumlah) {
         super.tambahStok(jumlah);
@@ -149,6 +154,7 @@ class Keyboard extends Barang {
     
     @Override
     public void kurangiStok(int jumlah) {
+        // Validasi stok untuk mencegah overselling
         if (jumlah > getStok()) {
             System.out.println("Gagal, membeli " + jumlah + " keyboard. Stok tidak mencukupi.");
             return;
