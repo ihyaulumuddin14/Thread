@@ -13,17 +13,17 @@ public class AppRun1 {
 
         executor = Executors.newFixedThreadPool(jumlahThread);
         
-        executor.execute(() -> AppRun.digitFaktorial());
-        executor.execute(() -> AppRun.cekKeberadaanPrima(10000, 9873));
-        executor.execute(() -> AppRun.hitungKuadrat(15458));
-        executor.execute(() -> AppRun.cariMaksimum());
-        executor.execute(() -> AppRun.jumlahkanArray());
+        executor.execute(() -> Pekerjaan.digitFaktorial());
+        executor.execute(() -> Pekerjaan.cekKeberadaanPrima(10000, 9873));
+        executor.execute(() -> Pekerjaan.hitungKuadrat(15458));
+        executor.execute(() -> Pekerjaan.cariMaksimum());
+        executor.execute(() -> Pekerjaan.jumlahkanArray());
 
         executor.shutdown();
     }
 }
 
-class AppRun {
+class Pekerjaan {
     // 1. hitung digit faktorial
     static void digitFaktorial() {
         String threadName = Thread.currentThread().getName();
