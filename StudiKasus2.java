@@ -9,20 +9,15 @@ public class StudiKasus2 {
     public static void main(String[] args) {
         ExecutorService executor = Executors.newFixedThreadPool(5);
 
-        for (int i = 1; i <= 15; i++) {
-            try {
-                if (i % 2 == 0) {
-                    Thread.sleep(250);
-                    executor.execute(() -> {
-                        Inventori.tambahStok("Laptop", new Random().nextInt(5) + 1);
-                    });
-                } else {
-                    executor.execute(() -> {
-                        Inventori.kurangiStok("Laptop", new Random().nextInt(4) + 1);
-                    });
-                }
-            } catch (InterruptedException e) {
-                System.out.println("Terjadi kesalahan saat menghitung faktorial: " + e.getMessage());
+        for (int i = 1; i <= 30; i++) {
+            if (i % 2 == 0) {
+                executor.execute(() -> {
+                    Inventori.tambahStok("Laptop", new Random().nextInt(7) + 1);
+                });
+            } else {
+                executor.execute(() -> {
+                    Inventori.kurangiStok("Laptop", new Random().nextInt(8) + 1);
+                });
             }
         }
 
@@ -43,9 +38,9 @@ class Inventori {
         String threadName = Thread.currentThread().getName().substring(7);
 
         try {
-            Thread.sleep(350);
+            Thread.sleep(450);
         } catch(InterruptedException e) {
-            System.out.println("Terjadi kesalahan saat menghitung faktorial: " + e.getMessage());
+            System.out.println("Kesalahan saat sistem restock: " + e.getMessage());
         }
         
         System.out.print(threadName + " - ");
@@ -59,9 +54,9 @@ class Inventori {
         String threadName = Thread.currentThread().getName().substring(7);
 
         try {
-            Thread.sleep(350);
+            Thread.sleep(250);
         } catch(InterruptedException e) {
-            System.out.println("Terjadi kesalahan saat menghitung faktorial: " + e.getMessage());
+            System.out.println("Kesalahan saat sistem beli: " + e.getMessage());
         }
         
         System.out.print(threadName + " - ");
@@ -90,11 +85,11 @@ class Barang {
     }
 
     protected void infoBeli(int jumlah) {
-        System.out.print("Berhasil beli " + jumlah + ". ");
+        System.out.print("Berhasil beli " + jumlah + " ");
     }
 
     protected void infoRestock(int jumlah) {
-        System.out.print("Restock " + jumlah + ". ");
+        System.out.print("Restock " + jumlah + " ");
     }
 
     public int getStok() {
@@ -111,17 +106,19 @@ class Laptop extends Barang {
     public void tambahStok(int jumlah) {
         super.tambahStok(jumlah);
         super.infoRestock(jumlah);
+        System.out.print("Laptop " + this.merk + ". ");
         System.out.println("Stok sekarang: " + getStok());
     }
-
+    
     @Override
     public void kurangiStok(int jumlah) {
         if (jumlah > getStok()) {
-            System.out.println("Stok tidak mencukupi.");
+            System.out.println("Gagal, membeli " + jumlah + " laptop. Stok tidak mencukupi.");
             return;
         }
         super.kurangiStok(jumlah);
         super.infoBeli(jumlah);
+        System.out.print("Laptop " + this.merk + ". ");
         System.out.println("Stok tersisa: " + getStok());
     }
 }
